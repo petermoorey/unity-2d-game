@@ -11,6 +11,8 @@ public class Platformer : MonoBehaviour
     public Transform isGroundedChecker; 
     public float checkGroundRadius; 
     public LayerMask groundLayer;
+    public float fallMultiplier = 2.5f; 
+    public float lowJumpMultiplier = 2f;
 
     // Start is called before the first frame update 
     void Start() {
@@ -21,6 +23,7 @@ public class Platformer : MonoBehaviour
     void Update() { 
         Move();
         Jump();
+        BetterJump();
         CheckIfGrounded();
     }
 
@@ -34,6 +37,14 @@ public class Platformer : MonoBehaviour
     if (Input.GetKeyDown(KeyCode.Space) && isGrounded) { 
         rb.velocity = new Vector2(rb.velocity.x, jumpForce); 
         } 
+    }
+
+    void BetterJump() {
+    if (rb.velocity.y < 0) {
+        rb.velocity += Vector2.up * Physics2D.gravity * (fallMultiplier - 1) * Time.deltaTime;
+    } else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space)) {
+        rb.velocity += Vector2.up * Physics2D.gravity * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }   
     }
 
     void CheckIfGrounded() { 
